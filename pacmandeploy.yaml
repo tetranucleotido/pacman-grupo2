@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pacman-deployment
+  namespace: grupo2
+  labels:
+    app: grupo2
+spec:
+  selector:
+    matchLabels:
+      app: grupo2
+  template:
+    metadata:
+      labels:
+        app: grupo2
+    spec:
+      containers:
+      - name: pacman-image
+        image: roxsross12/pacman:1.0.1
+        ports:
+        - containerPort: 8080
+        envFrom:
+          - secretRef:
+              name: pacman-secret
+        env:
+        - name: MY_MONGO_PORT
+          value: "27017"
+        - name: MONGO_USE_SSL
+          value: "false"
+        - name: MONGO_VALIDATE_SSL
+          value: "false"
+        - name: MY_NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
